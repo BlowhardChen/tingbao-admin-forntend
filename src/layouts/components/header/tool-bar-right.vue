@@ -1,9 +1,7 @@
 <template>
   <div class="tool-bar-ri">
     <div class="header-icon">
-      <SearchMenu id="searchMenu" />
       <ThemeSetting id="themeSetting" />
-      <!-- <Message id="message" /> -->
       <Fullscreen id="fullscreen" />
     </div>
     <Avatar />
@@ -14,14 +12,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useUserStore } from "@/stores/modules/user";
-import SearchMenu from "./components/search-menu.vue";
 import ThemeSetting from "./components/theme-setting.vue";
-import Message from "./components/message.vue";
 import Fullscreen from "./components/fullscreen.vue";
 import Avatar from "./components/avatar.vue";
 
 const userStore = useUserStore();
-const username = computed(() => userStore.userInfo.name);
+const username = computed(() => userStore.userInfo.userName);
 </script>
 
 <style scoped lang="scss">

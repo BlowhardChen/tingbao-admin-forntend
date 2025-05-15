@@ -21,9 +21,6 @@
           </div>
         </div>
       </el-scrollbar>
-      <div class="collapse">
-        <CollapseIcon />
-      </div>
     </div>
     <el-aside :class="{ 'not-aside': !subMenuList.length }" :style="{ width: isCollapse ? '65px' : '240px' }">
       <div class="logo flx-center">
@@ -54,7 +51,8 @@
 <script setup lang="ts" name="layout-columns">
 import { ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/modules/auth";
+import { filterStaticMenus } from "@/utils/router";
+import { staticRouter } from "@/routers/modules/staticRouter";
 import { useGlobalStore } from "@/stores/modules/global";
 import Main from "@/layouts/components/main/index.vue";
 import ToolBarLeft from "@/layouts/components/header/tool-bar-left.vue";
@@ -66,11 +64,11 @@ const title = import.meta.env.VITE_GLOB_APP_TITLE;
 
 const route = useRoute();
 const router = useRouter();
-const authStore = useAuthStore();
 const globalStore = useGlobalStore();
 const accordion = computed(() => globalStore.accordion);
 const isCollapse = computed(() => globalStore.isCollapse);
-const menuList = computed(() => authStore.showMenuListGet);
+const layoutRoute = staticRouter.find(route => route.name === "layout");
+const menuList = computed(() => (layoutRoute ? filterStaticMenus(layoutRoute.children || []) : []));
 const activeMenu = computed(() => (route.meta.activeMenu ? route.meta.activeMenu : route.path) as string);
 
 const subMenuList = ref<Menu.MenuOptions[]>([]);

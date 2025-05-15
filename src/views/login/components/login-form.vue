@@ -1,7 +1,7 @@
 <template>
   <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" size="large">
     <el-form-item prop="username">
-      <el-input v-model="loginForm.username" placeholder="用户名：admin / user">
+      <el-input v-model="loginForm.username" placeholder="用户名：">
         <template #prefix>
           <el-icon class="el-input__icon">
             <user />
@@ -10,7 +10,7 @@
       </el-input>
     </el-form-item>
     <el-form-item prop="password">
-      <el-input v-model="loginForm.password" type="password" placeholder="密码：123456" show-password autocomplete="new-password">
+      <el-input v-model="loginForm.password" type="password" placeholder="密码：" show-password autocomplete="new-password">
         <template #prefix>
           <el-icon class="el-input__icon">
             <lock />
@@ -21,7 +21,7 @@
   </el-form>
   <div class="login-btn">
     <el-button :icon="CircleClose" round size="large" @click="resetForm(loginFormRef)"> 重置 </el-button>
-    <el-button :icon="UserFilled" round size="large" type="primary" :loading="loading" @click="login(loginFormRef)">
+    <el-button :icon="UserFilled" round size="large" type="primary" :loading="loading" v-debounce="() => login(loginFormRef)">
       登录
     </el-button>
   </div>
@@ -39,7 +39,7 @@ import { useTabsStore } from "@/stores/modules/tabs";
 import { useKeepAliveStore } from "@/stores/modules/keepAlive";
 import { CircleClose, UserFilled } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
-import md5 from "md5";
+import { loginApi } from "@/api/modules/login";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -66,15 +66,16 @@ const login = (formEl: FormInstance | undefined) => {
     if (!valid) return;
     loading.value = true;
     try {
-      // 1.执行登录接口
-      // const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
-      // userStore.setToken(data.access_token);
-
-      // 3.清空 tabs、keepAlive 数据
+      // 执行登录接口
+      const { data } = await loginApi({ ...loginForm });
+      console.log("执行登录接口", data);
+      userStore.setToken(data.token);
+      userStore.setUserInfo(data.userinfo);
+      //清空 tabs、keepAlive 数据
       tabsStore.closeMultipleTab();
       keepAliveStore.setKeepAliveName();
 
-      // 4.跳转到首页
+      // 跳转到首页
       router.push(HOME_URL);
       ElNotification({
         title: getTimeState(),

@@ -4,7 +4,9 @@
       <el-tabs v-model="tabsMenuValue" type="card" @tab-click="tabClick" @tab-remove="tabRemove">
         <el-tab-pane v-for="item in tabsMenuList" :key="item.path" :label="item.title" :name="item.path" :closable="item.close">
           <template #label>
-            <IconSvg v-show="item.icon && tabsIcon" class="tabs-icon" :icon-class="item.icon" />
+            <el-icon v-if="item.icon && tabsIcon" class="tabs-icon">
+              <component :is="item.icon"></component>
+            </el-icon>
             {{ item.title }}
           </template>
         </el-tab-pane>
@@ -20,16 +22,14 @@ import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useGlobalStore } from "@/stores/modules/global";
 import { useTabsStore } from "@/stores/modules/tabs";
-import { useAuthStore } from "@/stores/modules/auth";
 import { useKeepAliveStore } from "@/stores/modules/keepAlive";
 import { TabsPaneContext, TabPaneName } from "element-plus";
 import MoreButton from "./components/more-button.vue";
-import IconSvg from "@/components/icon-svg/index.vue";
+import { staticRouter } from "@/routers/modules/staticRouter";
 
 const route = useRoute();
 const router = useRouter();
 const tabStore = useTabsStore();
-const authStore = useAuthStore();
 const globalStore = useGlobalStore();
 const keepAliveStore = useKeepAliveStore();
 
@@ -75,10 +75,26 @@ const tabsDrop = () => {
   });
 };
 
+// 展平静态路由
+const getFlatStaticRoutes = (routes: any[], parentPath = ""): any[] => {
+  return routes.flatMap(route => {
+    const fullPath = route.path.startsWith("/") ? route.path : `${parentPath}/${route.path}`;
+    const current = { ...route, path: fullPath };
+
+    if (route.children && route.children.length) {
+      return [current, ...getFlatStaticRoutes(route.children, fullPath)];
+    }
+
+    return [current];
+  });
+};
+
 // 初始化需要固定的 tabs
 const initTabs = () => {
-  authStore.flatMenuListGet.forEach(item => {
-    if (item.meta.isAffix && !item.meta.isHide && !item.meta.isFull) {
+  const flatRoutes = getFlatStaticRoutes(staticRouter);
+
+  flatRoutes.forEach(item => {
+    if (item.meta?.isAffix && !item.meta.isHide && !item.meta.isFull) {
       const tabsParams = {
         icon: item.meta.icon,
         title: item.meta.title,

@@ -6,8 +6,7 @@ import { useKeepAliveStore } from "./keepAlive";
 
 const keepAliveStore = useKeepAliveStore();
 
-export const useTabsStore = defineStore({
-  id: "geeker-tabs",
+export const useTabsStore = defineStore("tabs", {
   state: (): TabsState => ({
     tabsMenuList: []
   }),

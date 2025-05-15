@@ -2,18 +2,19 @@
   <template v-for="subItem in menuList" :key="subItem.path">
     <el-sub-menu v-if="subItem.children?.length" :index="subItem.path">
       <template #title>
-        <!-- 使用el-icon占位，避免收起菜单时svg图标消失 -->
-        <el-icon>
-          <IconSvg :icon-class="subItem.meta.icon" class="menu-icon" />
+        <el-icon v-if="subItem.meta.icon">
+          <component :is="subItem.meta.icon"></component>
         </el-icon>
-        <span class="sle sub-title">{{ subItem.meta.title }}</span>
+        <span class="sle">{{ subItem.meta.title }}</span>
       </template>
       <SubMenu :menu-list="subItem.children" />
     </el-sub-menu>
     <el-menu-item v-else :index="subItem.path" @click="handleClickMenu(subItem)">
-      <IconSvg :icon-class="subItem.meta.icon" class="menu-icon" />
+      <el-icon v-if="subItem.meta.icon">
+        <component :is="subItem.meta.icon"></component>
+      </el-icon>
       <template #title>
-        <span class="sle sub-title">{{ subItem.meta.title }}</span>
+        <span class="sle">{{ subItem.meta.title }}</span>
       </template>
     </el-menu-item>
   </template>
@@ -21,7 +22,6 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import IconSvg from "@/components/icon-svg/index.vue";
 
 defineProps<{ menuList: Menu.MenuOptions[] }>();
 
@@ -46,18 +46,10 @@ const handleClickMenu = (subItem: Menu.MenuOptions) => {
   }
 }
 .el-menu-item {
-  .menu-icon {
-    color: #898988;
-  }
   &:hover {
     color: var(--el-menu-hover-text-color);
   }
   &.is-active {
-    .menu-icon {
-      color: var(--el-menu-active-color);
-    }
-
-    font-weight: bold;
     color: var(--el-menu-active-color) !important;
     background-color: var(--el-menu-active-bg-color) !important;
     &::before {
@@ -70,27 +62,11 @@ const handleClickMenu = (subItem: Menu.MenuOptions) => {
     }
   }
 }
-.el-sub-menu__title {
-  font-size: 16px;
-  .menu-icon {
-    color: #898988;
-  }
-}
-.sub-title {
-  height: 40px;
-  line-height: 40px;
-}
 .vertical,
 .classic,
 .transverse {
   .el-menu-item {
-    .menu-icon {
-      color: #898988;
-    }
     &.is-active {
-      .menu-icon {
-        color: var(--el-menu-active-color);
-      }
       &::before {
         left: 0;
       }
@@ -99,20 +75,11 @@ const handleClickMenu = (subItem: Menu.MenuOptions) => {
 }
 .columns {
   .el-menu-item {
-    .menu-icon {
-      color: #898988;
-    }
     &.is-active {
       &::before {
         right: 0;
       }
     }
-  }
-}
-.classic,
-.transverse {
-  #driver-highlighted-element-stage {
-    background-color: #606266 !important;
   }
 }
 </style>

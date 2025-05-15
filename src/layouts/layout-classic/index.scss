@@ -25,7 +25,7 @@
           object-fit: contain;
         }
         .logo-text {
-          font-size: 18px;
+          font-size: 14px;
           font-weight: bold;
           color: var(--el-header-logo-text-color);
           white-space: nowrap;
@@ -57,11 +57,4 @@
       flex-direction: column;
     }
   }
-}
-.collapse {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  padding-left: 20px;
-  border: 1px solid rgb(0 0 0 / 6%);
 }

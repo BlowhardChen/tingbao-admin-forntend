@@ -8,7 +8,7 @@ const throttle: Directive = {
     if (typeof binding.value !== "function") {
       throw "callback must be a function";
     }
-    let timer: NodeJS.Timeout | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
     el.__handleClick__ = function () {
       if (timer) {
         clearTimeout(timer);

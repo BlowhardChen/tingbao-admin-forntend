@@ -27,9 +27,6 @@
               <SubMenu :menu-list="menuList" />
             </el-menu>
           </el-scrollbar>
-          <div class="collapse">
-            <CollapseIcon />
-          </div>
         </div>
       </el-aside>
       <el-container class="classic-main">
@@ -42,22 +39,22 @@
 <script setup lang="ts" name="layout-classic">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { useAuthStore } from "@/stores/modules/auth";
+import { filterStaticMenus } from "@/utils/router";
+import { staticRouter } from "@/routers/modules/staticRouter";
 import { useGlobalStore } from "@/stores/modules/global";
 import Main from "@/layouts/components/main/index.vue";
 import SubMenu from "@/layouts/components/menu/sub-menu.vue";
 import ToolBarLeft from "@/layouts/components/header/tool-bar-left.vue";
 import ToolBarRight from "@/layouts/components/header/tool-bar-right.vue";
-import CollapseIcon from "../components/header/components/collapse-icon.vue";
 
 const title = import.meta.env.VITE_GLOB_APP_TITLE;
 
 const route = useRoute();
-const authStore = useAuthStore();
 const globalStore = useGlobalStore();
 const accordion = computed(() => globalStore.accordion);
 const isCollapse = computed(() => globalStore.isCollapse);
-const menuList = computed(() => authStore.showMenuListGet);
+const layoutRoute = staticRouter.find(route => route.name === "layout");
+const menuList = computed(() => (layoutRoute ? filterStaticMenus(layoutRoute.children || []) : []));
 const activeMenu = computed(() => (route.meta.activeMenu ? route.meta.activeMenu : route.path) as string);
 </script>
 

@@ -18,22 +18,26 @@ import { computed } from "vue";
 import { HOME_URL } from "@/config";
 import { useRoute, useRouter } from "vue-router";
 import { ArrowRight } from "@element-plus/icons-vue";
-import { useAuthStore } from "@/stores/modules/auth";
 import { useGlobalStore } from "@/stores/modules/global";
 import IconSvg from "@/components/icon-svg/index.vue";
 
 const route = useRoute();
 const router = useRouter();
-const authStore = useAuthStore();
 const globalStore = useGlobalStore();
 
 const breadcrumbList = computed(() => {
-  let breadcrumbData = authStore.breadcrumbListGet[route.matched[route.matched.length - 1].path] ?? [];
-  // 🙅‍♀️不需要首页面包屑可删除以下判断
-  if (breadcrumbData[0].path !== HOME_URL) {
-    breadcrumbData = [{ path: HOME_URL, meta: { icon: "HomeFilled", title: "首页" } }, ...breadcrumbData];
+  const matched = route.matched.filter(item => item.meta && item.meta.title);
+  // 添加首页作为第一个面包屑（如果当前不是首页）
+  if (matched.length === 0 || matched[0].path !== HOME_URL) {
+    return [
+      {
+        path: HOME_URL,
+        meta: { icon: "HomeFilled", title: "首页" }
+      },
+      ...matched
+    ];
   }
-  return breadcrumbData;
+  return matched;
 });
 
 // Click Breadcrumb
