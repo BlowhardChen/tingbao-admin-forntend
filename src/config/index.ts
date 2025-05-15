@@ -7,4 +7,4 @@ export const HOME_URL: string = "/home";
 export const LOGIN_URL: string = "/login";
 
 // 默认主题颜色
-export const DEFAULT_PRIMARY: string = "#08AE3C";
+export const DEFAULT_PRIMARY: string = "#FE9393";

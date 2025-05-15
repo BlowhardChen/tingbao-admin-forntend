@@ -1,31 +1,23 @@
 import { defineStore } from "pinia";
-import { GlobalUser, UserState } from "../interface";
+import { UserState } from "@/stores/interface";
+import piniaPersistConfig from "@/config/piniaPersist";
 
-export const useUserStore = defineStore("user", {
+export const useUserStore = defineStore({
+  id: "geeker-user",
   state: (): UserState => ({
     token: "",
-    userInfo: null
+    userInfo: { name: "Geeker" }
   }),
-
+  getters: {},
   actions: {
-    // 存储toke
+    // Set Token
     setToken(token: string) {
       this.token = token;
     },
-
-    // 移除token
-    removeToken() {
-      this.token = "";
-    },
-
-    // 存储用户信息
-    setUserInfoData(user: GlobalUser) {
-      this.userInfo = user;
-    },
-
-    // 移除用户信息
-    removeUserInfoData() {
-      this.userInfo = null;
+    // Set setUserInfo
+    setUserInfo(userInfo: UserState["userInfo"]) {
+      this.userInfo = userInfo;
     }
-  }
+  },
+  persist: piniaPersistConfig("user")
 });

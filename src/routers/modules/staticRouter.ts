@@ -23,6 +23,14 @@ export const staticRouter: RouteRecordRaw[] = [
     component: () => import("@/layouts/index.vue"),
     redirect: HOME_URL,
     children: []
+  },
+  {
+    path: "/home",
+    name: "home",
+    component: () => import("@/views/home/index.vue"),
+    meta: {
+      title: "首页"
+    }
   }
 ];
 
@@ -44,6 +52,14 @@ export const errorRouter = [
     component: () => import("@/components/error-message/404.vue"),
     meta: {
       title: "404页面"
+    }
+  },
+  {
+    path: "/500",
+    name: "500",
+    component: () => import("@/components/error-message/500.vue"),
+    meta: {
+      title: "500页面"
     }
   },
   // 解决刷新页面、路由警告

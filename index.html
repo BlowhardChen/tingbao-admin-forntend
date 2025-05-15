@@ -2,8 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" type="image/svg+xml" href="/vue.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%- title %></title>
   </head>
@@ -86,7 +85,6 @@
           }
         }
       </style>
-
       <div class="loading-box">
         <div class="loading-wrap">
           <span class="dot dot-spin"><i></i><i></i><i></i><i></i></span>
@@ -94,11 +92,12 @@
       </div>
     </div>
     <script>
-      const themeState = JSON.parse(window.localStorage.getItem("global"));
-      if (themeState) {
+      const globalState = JSON.parse(window.localStorage.getItem("global"));
+      if (globalState) {
         const dot = document.querySelectorAll(".dot i");
         const html = document.querySelector("html");
-        dot.forEach(item => (item.style.background = themeState.primary));
+        dot.forEach(item => (item.style.background = globalState.primary));
+        if (globalState.isDark) html.style.background = "#141414";
       }
     </script>
     <script type="module" src="/src/main.ts"></script>

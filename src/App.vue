@@ -1,17 +1,23 @@
 <template>
-  <el-config-provider :locale="zhCn">
-    <router-view />
+  <el-config-provider :size="assemblySize" :button="buttonConfig">
+    <router-view></router-view>
   </el-config-provider>
 </template>
 
 <script setup lang="ts">
+import { useTheme } from "@/hooks/useTheme";
 import { ElConfigProvider } from "element-plus";
-import zhCn from "element-plus/es/locale/lang/zh-cn";
-import { useThemeStore } from "./stores";
+import { useGlobalStore } from "@/stores/modules/global";
 
-const theme = useThemeStore();
-theme.initTheme();
+const globalStore = useGlobalStore();
+
+// init theme
+const { initTheme } = useTheme();
+initTheme();
+
+// element assemblySize
+const assemblySize = computed(() => globalStore.assemblySize);
+
+// element button config
+const buttonConfig = reactive({ autoInsertSpace: false });
 </script>
-<style>
-@import "./styles/main.scss";
-</style>

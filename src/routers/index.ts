@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { useUserStore } from "@/stores";
-import { LOGIN_URL } from "@/config";
+import { useUserStore } from "@/stores/modules/user";
+import { HOME_URL, LOGIN_URL } from "@/config";
 import { staticRouter, errorRouter } from "@/routers/modules/staticRouter";
 import NProgress from "@/config/nprogress";
 
@@ -31,8 +31,6 @@ const router = createRouter({
  * 路由前置守卫
  */
 router.beforeEach(async (to, from, next) => {
-  const userStore = useUserStore();
-
   // 1. 开始加载进度条
   NProgress.start();
 
@@ -40,14 +38,18 @@ router.beforeEach(async (to, from, next) => {
   const appTitle = import.meta.env.VITE_GLOB_APP_TITLE;
   document.title = to.meta.title ? `${to.meta.title} - ${appTitle}` : appTitle;
 
-  // 3. 登录页访问逻辑（已登录则返回来源页）
+  // 3. 登录页访问逻辑（已登录则跳转首页）
   if (to.path.toLowerCase() === LOGIN_URL && isAuthenticated()) {
-    return next(from.fullPath);
+    return next(HOME_URL);
   }
 
   // 4. 未登录或 Token 过期 → 跳转登录页
   if (!isAuthenticated() || isTokenExpired()) {
-    if (!userStore.token) return next({ path: LOGIN_URL, replace: true });
+    if (to.path !== LOGIN_URL) {
+      return next({ path: LOGIN_URL, replace: true });
+    } else {
+      return next(); // 已经在登录页，就不要跳了
+    }
   }
 
   // 5. [可选] 权限判断 + 动态路由处理（需要时启用）

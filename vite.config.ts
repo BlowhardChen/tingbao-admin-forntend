@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv, ConfigEnv, UserConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import { resolve } from "path";
 import { wrapperEnv } from "./build/getEnv";
 import { createProxy } from "./build/proxy";
@@ -33,9 +33,7 @@ export default defineConfig(({ mode }) => {
       // CSS 预处理器
       preprocessorOptions: {
         // 定义全局 SCSS 变量
-        scss: {
-          additionalData: `@import "@/styles/var.scss";`
-        }
+        scss: {}
       }
     },
     server: {

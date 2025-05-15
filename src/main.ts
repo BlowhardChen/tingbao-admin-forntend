@@ -2,20 +2,26 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import "@/styles/reset.scss";
 import "@/styles/common.scss";
+import "@/assets/iconfont/iconfont.scss";
+import "@/assets/fonts/font.scss";
 import "element-plus/dist/index.css";
 import "element-plus/theme-chalk/dark/css-vars.css";
+import "@/styles/element-dark.scss";
+import "@/styles/element.scss";
+import "virtual:svg-icons-register";
 import ElementPlus from "element-plus";
 import * as Icons from "@element-plus/icons-vue";
-import directives from "@/directives/index"; // 自定义指令
-import zhCn from "element-plus/es/locale/lang/zh-cn";
-import pinia from "@/stores";
+import directives from "@/directives/index";
 import router from "@/routers";
+import pinia from "@/stores";
+import errorHandler from "@/utils/errorHandler";
 
 const app = createApp(App);
 
-// 注册 element Icons
+app.config.errorHandler = errorHandler;
+
 Object.keys(Icons).forEach(key => {
   app.component(key, Icons[key as keyof typeof Icons]);
 });
 
-app.use(ElementPlus, { locale: zhCn }).use(directives).use(router).use(pinia).mount("#app");
+app.use(ElementPlus).use(directives).use(router).use(pinia).mount("#app");
