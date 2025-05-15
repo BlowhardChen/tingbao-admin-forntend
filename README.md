@@ -62,6 +62,10 @@ tingbao-admin-forntend
 │  ├─ main.ts             # 项目入口文件
 │  └─ vite-env.d.ts       # 指定 ts 识别 vue
 ├─ .editorconfig          # 统一不同编辑器的编码风格
+├─ .env                   # vite 常用配置
+├─ .env.development       # 开发环境配置
+├─ .env.production        # 生产环境配置
+├─ .env.test              # 测试环境配置
 ├─ .eslintignore          # 忽略 Eslint 校验
 ├─ .eslintrc.cjs          # Eslint 校验配置文件
 ├─ .gitignore             # 忽略 git 提交

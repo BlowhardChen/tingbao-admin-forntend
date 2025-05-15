@@ -1,106 +1,67 @@
-import { defineConfig, loadEnv } from "vite";
-import vue from "@vitejs/plugin-vue";
-import vueJsx from "@vitejs/plugin-vue-jsx";
-import path from "path";
-import AutoImport from "unplugin-auto-import/vite";
-import Components from "unplugin-vue-components/vite";
-import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-import VueSetupExtend from "unplugin-vue-setup-extend-plus/vite";
-import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
-import viteCompression from "vite-plugin-compression";
-import { visualizer } from "rollup-plugin-visualizer";
-import { VitePWA } from "vite-plugin-pwa";
+import { defineConfig, loadEnv, ConfigEnv, UserConfig } from "vite";
+import { resolve } from "path";
+import { wrapperEnv } from "./build/getEnv";
+import { createProxy } from "./build/proxy";
+import { createVitePlugins } from "./build/plugins";
+import pkg from "./package.json";
+import dayjs from "dayjs";
 
+const { dependencies, devDependencies, name, version } = pkg;
+const __APP_INFO__ = {
+  pkg: { dependencies, devDependencies, name, version },
+  lastBuildTime: dayjs().format("YYYY-MM-DD HH:mm:ss")
+};
+
+// 参考文档 https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd());
+  const root = process.cwd();
+  const env = loadEnv(mode, root);
+  const viteEnv = wrapperEnv(env);
 
   return {
-    base: env.VITE_APP_BASE || "/",
+    base: viteEnv.VITE_PUBLIC_PATH,
+    root,
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "./src")
+        "@": resolve(__dirname, "./src")
       }
     },
-    plugins: [
-      vue(),
-      vueJsx(),
-      VueSetupExtend(),
-      AutoImport({
-        imports: ["vue", "vue-router", "pinia"],
-        dts: "src/auto-imports.d.ts",
-        resolvers: [ElementPlusResolver()]
-      }),
-      Components({
-        dts: "src/components.d.ts",
-        resolvers: [ElementPlusResolver()]
-      }),
-      createSvgIconsPlugin({
-        iconDirs: [path.resolve(process.cwd(), "src/assets/icons")],
-        symbolId: "icon-[dir]-[name]"
-      }),
-      viteCompression({
-        algorithm: "gzip",
-        threshold: 10240,
-        ext: ".gz"
-      }),
-      visualizer({
-        open: false,
-        filename: "dist/report.html",
-        gzipSize: true,
-        brotliSize: true
-      }),
-      VitePWA({
-        registerType: "autoUpdate",
-        includeAssets: ["favicon.svg", "robots.txt"],
-        manifest: {
-          name: "Tingbao Admin",
-          short_name: "Admin",
-          description: "管理后台系统",
-          theme_color: "#ffffff",
-          icons: [
-            {
-              src: "/pwa-192x192.png",
-              sizes: "192x192",
-              type: "image/png"
-            },
-            {
-              src: "/pwa-512x512.png",
-              sizes: "512x512",
-              type: "image/png"
-            }
-          ]
-        }
-      })
-    ],
+    define: {
+      __APP_INFO__: JSON.stringify(__APP_INFO__)
+    },
     css: {
+      // CSS 预处理器
       preprocessorOptions: {
+        // 定义全局 SCSS 变量
         scss: {
-          additionalData: `@use "@/styles/variables.scss" as *;`
+          additionalData: `@import "@/styles/var.scss";`
         }
       }
     },
     server: {
-      port: 5173,
-      open: true,
-      proxy: {
-        [env.VITE_API_PREFIX]: {
-          target: env.VITE_API_BASE_URL,
-          changeOrigin: true,
-          rewrite: path => path.replace(new RegExp(`^${env.VITE_API_PREFIX}`), "")
-        }
-      }
+      host: "0.0.0.0", // 允许IP访问
+      port: viteEnv.VITE_PORT, // 应用端口 (默认:3000)
+      open: viteEnv.VITE_OPEN, // 运行是否自动打开浏览器
+      cors: true,
+      proxy: createProxy(viteEnv.VITE_PROXY)
+    },
+    plugins: createVitePlugins(viteEnv), // 插件
+    esbuild: {
+      pure: viteEnv.VITE_DROP_CONSOLE ? ["console.log", "debugger"] : []
     },
     build: {
       outDir: "dist",
+      minify: "esbuild",
+      // 禁用 gzip 压缩大小报告，可略微减少打包时间
+      reportCompressedSize: false,
+      // 规定触发警告的 chunk 大小
+      chunkSizeWarningLimit: 2000,
       rollupOptions: {
         output: {
-          manualChunks(id) {
-            if (id.includes("node_modules")) {
-              if (id.includes("element-plus")) return "elementPlus";
-              if (id.includes("echarts")) return "echarts";
-              return "vendor";
-            }
-          }
+          // Static resource classification and packaging
+          chunkFileNames: "assets/js/[name]-[hash].js",
+          entryFileNames: "assets/js/[name]-[hash].js",
+          assetFileNames: "assets/[ext]/[name]-[hash].[ext]"
         }
       }
     }

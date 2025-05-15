@@ -4,9 +4,19 @@
     "source.fixAll.stylelint": "explicit"
   },
   "stylelint.enable": true,
-  "stylelint.validate": ["css", "less", "postcss", "scss", "vue", "sass", "html"],
+  "stylelint.validate": [
+    "css",
+    "less",
+    "postcss",
+    "scss",
+    {
+      "language": "vue",
+      "autoFix": true
+    }
+  ],
   "files.eol": "\n",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "volar.takeOverMode.enabled": true, // ✅ 关键配置：开启 Volar 接管模式
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -67,6 +77,8 @@
     "pinia",
     "pjpeg",
     "Prefixs",
+    "screenfull",
+    "sortablejs",
     "sousuo",
     "spreadsheetml",
     "styl",
@@ -78,6 +90,7 @@
     "tuichu",
     "unplugin",
     "VITE",
+    "vuedraggable",
     "vueuse",
     "Vuex",
     "wangeditor",
@@ -85,5 +98,5 @@
     "xiaoxi",
     "zhongyingwen",
     "zhuti"
-  ],
+  ]
 }
