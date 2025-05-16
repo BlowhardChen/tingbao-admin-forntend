@@ -56,7 +56,7 @@ export const staticRouter: RouteRecordRaw[] = [
         component: () => import("@/views/member/index.vue"),
         meta: {
           title: "会员管理",
-          isAffix: true,
+          isAffix: false,
           icon: "UserFilled",
           isLink: "",
           isHide: false,
@@ -69,7 +69,7 @@ export const staticRouter: RouteRecordRaw[] = [
         component: () => import("@/views/project/index.vue"),
         meta: {
           title: "项目管理",
-          isAffix: true,
+          isAffix: false,
           icon: "GoodsFilled",
           isLink: "",
           isHide: false,
@@ -82,7 +82,7 @@ export const staticRouter: RouteRecordRaw[] = [
         component: () => import("@/views/recharge/index.vue"),
         meta: {
           title: "充值管理",
-          isAffix: true,
+          isAffix: false,
           icon: "WalletFilled",
           isLink: "",
           isHide: false,
@@ -95,7 +95,7 @@ export const staticRouter: RouteRecordRaw[] = [
         component: () => import("@/views/consume/index.vue"),
         meta: {
           title: "消费统计",
-          isAffix: true,
+          isAffix: false,
           icon: "Histogram",
           isLink: "",
           isHide: false,

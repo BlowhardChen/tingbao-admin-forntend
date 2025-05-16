@@ -12,7 +12,7 @@
   ></el-pagination>
 </template>
 
-<script setup lang="ts" name="Pagination">
+<script setup lang="ts" name="pagination">
 interface Pageable {
   pageNum: number;
   pageSize: number;

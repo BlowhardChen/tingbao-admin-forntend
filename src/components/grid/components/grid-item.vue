@@ -3,7 +3,7 @@
     <slot></slot>
   </div>
 </template>
-<script setup lang="ts" name="GridItem">
+<script setup lang="ts" name="gridItem">
 import { computed, inject, Ref, ref, useAttrs, watch } from "vue";
 import { Responsive, BreakPoint } from "../interface";
 

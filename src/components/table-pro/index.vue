@@ -19,7 +19,6 @@
       <div class="header-button-ri">
         <div class="button">
           <el-button v-if="headerRightBtn?.refresh" :icon="Refresh" plain @click="getTableList">刷新</el-button>
-          <el-button v-if="headerRightBtn?.print" :icon="Printer" plain @click="print">打印</el-button>
           <el-button v-if="headerRightBtn?.tableConfig" :icon="Operation" plain @click="openColSetting">表格设置</el-button>
           <el-button
             v-if="headerRightBtn?.search && searchColumns.length"
@@ -91,21 +90,19 @@
   <ColSetting v-if="headerRightBtn.tableConfig" ref="colRef" v-model:col-setting="colSetting" />
 </template>
 
-<script setup lang="ts" name="ProTable">
-import { ref, watch, computed, provide, onMounted } from "vue";
+<script setup lang="ts" name="tablePro">
+import { ref, watch, provide, onMounted } from "vue";
 import { ElTable } from "element-plus";
 import { useTable } from "@/hooks/useTable";
 import { useSelection } from "@/hooks/useSelection";
 import { BreakPoint } from "@/components/grid/interface";
 import { ColumnProps } from "@/components/table-pro/interface";
-import { Refresh, Printer, Operation, Search } from "@element-plus/icons-vue";
-import { filterEnum, formatValue, handleProp, handleRowAccordingToProp } from "@/utils";
+import { Refresh, Operation, Search } from "@element-plus/icons-vue";
+import { handleProp } from "@/utils";
 import SearchForm from "@/components/search-form/index.vue";
 import Pagination from "./components/pagination.vue";
 import ColSetting from "./components/col-setting.vue";
 import TableColumn from "./components/table-column.vue";
-import printJS from "print-js";
-
 interface RightButton {
   refresh?: boolean;
   print?: boolean;
@@ -220,45 +217,6 @@ const colSetting = tableColumns.value!.filter(
   item => !["selection", "index", "expand"].includes(item.type!) && item.prop !== "operation" && item.isShow
 );
 const openColSetting = () => colRef.value.openColSetting();
-
-// 处理打印数据（把后台返回的值根据 enum 做转换）
-const printData = computed(() => {
-  const handleData = props.data ?? tableData.value;
-  const printDataList = JSON.parse(JSON.stringify(selectedList.value.length ? selectedList.value : handleData));
-  // 找出需要转换数据的列（有 enum || 多级 prop && 需要根据 enum 格式化）
-  const needTransformCol = flatColumns.value!.filter(
-    item => (item.enum || (item.prop && item.prop.split(".").length > 1)) && item.isFilterEnum
-  );
-  needTransformCol.forEach(colItem => {
-    printDataList.forEach((tableItem: { [key: string]: any }) => {
-      tableItem[handleProp(colItem.prop!)] =
-        colItem.prop!.split(".").length > 1 && !colItem.enum
-          ? formatValue(handleRowAccordingToProp(tableItem, colItem.prop!))
-          : filterEnum(handleRowAccordingToProp(tableItem, colItem.prop!), enumMap.value.get(colItem.prop!), colItem.fieldNames);
-      for (const key in tableItem) {
-        if (tableItem[key] === null) tableItem[key] = formatValue(tableItem[key]);
-      }
-    });
-  });
-  return printDataList;
-});
-
-// 打印表格数据（💥 多级表头数据打印时，只能扁平化成一维数组，printJs 不支持多级表头打印）
-const print = () => {
-  const header = `<div style="text-align: center"><h2>${props.title}</h2></div>`;
-  const gridHeaderStyle = "border: 1px solid #ebeef5;height: 45px;color: #232425;text-align: center;background-color: #fafafa;";
-  const gridStyle = "border: 1px solid #ebeef5;height: 40px;color: #494b4e;text-align: center";
-  printJS({
-    printable: printData.value,
-    header: props.title && header,
-    properties: flatColumns
-      .value!.filter(item => !["selection", "index", "expand"].includes(item.type!) && item.isShow && item.prop !== "operation")
-      .map((item: ColumnProps) => ({ field: handleProp(item.prop!), displayName: item.label })),
-    type: "json",
-    gridHeaderStyle,
-    gridStyle
-  });
-};
 
 // 暴露给父组件的参数和方法(外部需要什么，都可以从这里暴露出去)
 defineExpose({

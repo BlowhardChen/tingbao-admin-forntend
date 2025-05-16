@@ -30,7 +30,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="SelectFilter">
+<script setup lang="ts" name="selectFilter">
 import { ref, watch } from "vue";
 
 interface OptionsProps {

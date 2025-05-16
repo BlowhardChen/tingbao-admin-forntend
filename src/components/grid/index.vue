@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="Grid">
+<script setup lang="ts" name="grid">
 import {
   ref,
   watch,

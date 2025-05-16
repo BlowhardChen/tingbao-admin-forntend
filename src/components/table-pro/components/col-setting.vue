@@ -21,7 +21,7 @@
   </el-drawer>
 </template>
 
-<script setup lang="ts" name="ColSetting">
+<script setup lang="ts" name="colSetting">
 import { ref } from "vue";
 import { ColumnProps } from "@/components/table-pro/interface";
 

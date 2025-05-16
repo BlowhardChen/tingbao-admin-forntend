@@ -23,7 +23,7 @@
     </el-form>
   </div>
 </template>
-<script setup lang="ts" name="SearchForm">
+<script setup lang="ts" name="searchForm">
 import { computed, ref } from "vue";
 import { ColumnProps } from "@/components/table-pro/interface";
 import { Refresh, ArrowDown, ArrowUp } from "@element-plus/icons-vue";
