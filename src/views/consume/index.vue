@@ -30,11 +30,6 @@ const columns: ColumnProps<any>[] = [
   { prop: "amount", label: "消费金额", search: { el: "input" } },
   { prop: "description", label: "备注信息" },
   {
-    prop: "createTime",
-    label: "创建时间",
-    width: 200
-  },
-  {
     prop: "updateTime",
     label: "更新时间",
     width: 200

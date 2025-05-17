@@ -10,6 +10,7 @@ import "@/styles/element-dark.scss";
 import "@/styles/element.scss";
 import "virtual:svg-icons-register";
 import ElementPlus from "element-plus";
+import zhCn from "element-plus/es/locale/lang/zh-cn";
 import * as Icons from "@element-plus/icons-vue";
 import directives from "@/directives/index";
 import router from "@/routers";
@@ -24,4 +25,4 @@ Object.keys(Icons).forEach(key => {
   app.component(key, Icons[key as keyof typeof Icons]);
 });
 
-app.use(ElementPlus).use(directives).use(router).use(pinia).mount("#app");
+app.use(ElementPlus, { locale: zhCn }).use(directives).use(router).use(pinia).mount("#app");

@@ -23,12 +23,12 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="projectMange">
+<script setup lang="tsx">
 import ProTable from "@/components/table-pro/index.vue";
 import { ColumnProps, ProTableInstance } from "@/components/table-pro/interface";
 import { Plus, EditPen } from "@element-plus/icons-vue";
 import { ResPage } from "@/api/interface";
-import { addProjectApi, changeProjectApi, editProjectApi, getProjectListApi } from "@/api/modules/project";
+import { addProjectApi, editProjectApi, getProjectListApi } from "@/api/modules/project";
 import { projectPriceStatus, projectStatus } from "@/utils/serviceDict";
 import ProjectDrawer from "./components/project-drawer.vue";
 import { useHandleData } from "@/hooks/useHandleData";
@@ -40,6 +40,7 @@ const proTable = ref<ProTableInstance>();
 // 表格配置项
 const columns: ColumnProps<any>[] = [
   { prop: "name", label: "项目名称", search: { el: "input" } },
+  { prop: "projectName", label: "项目类型", search: { el: "input" } },
   { prop: "activity", label: "项目描述", search: { el: "input" } },
   { prop: "price", label: "项目价格（￥）", search: { el: "input" } },
   {
@@ -48,7 +49,7 @@ const columns: ColumnProps<any>[] = [
     render: scope => {
       return (
         <>
-          <img style={" width: 52px;height: 52px;"} src={scope.row?.imageUrl ? scope.row?.imageUrl : ""} alt="" />
+          <img style={" width: 55px;height: 45px;"} src={scope.row?.imageUrl ? scope.row?.imageUrl : ""} alt="" />
         </>
       );
     }
@@ -123,8 +124,8 @@ const openDrawer = (title: string, row?: any | {}) => {
 // 改变起始价状态
 const changePriceStatus = async (row: Project.ProjectList): Promise<void> => {
   await useHandleData(
-    changeProjectApi,
-    { projectId: row.projectId, status: row.up === true ? false : true },
+    editProjectApi,
+    { projectId: row.projectId, status: row.up === true ? false : true, appointTypeId: row.appointTypeId },
     `将【${row.name}】${row.status === "0" ? "改为起始价" : "改为固定价"}`
   );
   proTable.value?.getTableList();
@@ -133,8 +134,8 @@ const changePriceStatus = async (row: Project.ProjectList): Promise<void> => {
 // 改变项目状态
 const changeProjectStatus = async (row: Project.ProjectList): Promise<void> => {
   await useHandleData(
-    changeProjectApi,
-    { projectId: row.projectId, status: row.status === "1" ? "0" : "1" },
+    editProjectApi,
+    { projectId: row.projectId, status: row.status === "1" ? "0" : "1", appointTypeId: row.appointTypeId },
     `${row.status === "0" ? "启用" : "禁用"}【${row.name}】`
   );
   proTable.value?.getTableList();
@@ -142,7 +143,6 @@ const changeProjectStatus = async (row: Project.ProjectList): Promise<void> => {
 
 // 获取项目列表
 const getProjectListData = (params?: any) => {
-  console.log("获取项目列表");
   const { ...newParams } = JSON.parse(JSON.stringify(params));
   return getProjectListApi({
     ...newParams
@@ -152,7 +152,7 @@ const getProjectListData = (params?: any) => {
 // dataCallback 是对于返回的表格数据做处理
 const dataCallback = (data: ResPage<any>) => {
   return {
-    rows: data,
+    rows: data.rows,
     total: data.total,
     pageNum: data.pageNum,
     pageSize: data.pageSize

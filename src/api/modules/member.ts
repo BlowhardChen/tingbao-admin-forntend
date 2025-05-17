@@ -11,7 +11,7 @@ export const getMemberListApi = (params: any) => {
   return http.post<ResPage<Member.MemberList[]>>("/weixin/user/list", params, { noLoading: false });
 };
 
-// 会员管理-会员开卡
-export const addMemberApi = (params: any) => {
-  return http.post<any>("/weixin/user/insert", params, { noLoading: false });
+// 会员管理-会员充值
+export const memberRechargeApi = (params: any) => {
+  return http.post("/weixin/user/recharge", params, { noLoading: false });
 };

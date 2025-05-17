@@ -8,14 +8,12 @@
       :disabled="self_disabled"
       :show-file-list="false"
       :on-change="handleImgUpload"
-      :on-success="uploadSuccess"
-      :on-error="uploadError"
       :drag="drag"
       :accept="fileType.join(',')"
       :auto-upload="false"
     >
       <template v-if="imageUrl">
-        <img :src="imageUrl" class="upload-image" />
+        <img :src="devImgUrl" class="upload-image" />
         <div class="upload-handle" @click.stop>
           <div v-if="!self_disabled" class="handle-icon" @click="editImg">
             <el-icon><Edit /></el-icon>
@@ -50,7 +48,7 @@
 import { ref, computed, inject } from "vue";
 import { generateUUID } from "@/utils";
 import { ElNotification, formContextKey } from "element-plus";
-import type { UploadFile, UploadProps } from "element-plus";
+import type { UploadFile } from "element-plus";
 
 interface UploadFileProps {
   imageUrl: string;
@@ -74,6 +72,7 @@ const props = withDefaults(defineProps<UploadFileProps>(), {
   borderRadius: "8px"
 });
 
+const devImgUrl = ref(props.imageUrl);
 const uuid = ref("id-" + generateUUID());
 const imgViewVisible = ref(false);
 const formContext = inject(formContextKey, void 0);
@@ -89,7 +88,7 @@ const emit = defineEmits<UploadEmits>();
  * @description 删除图片
  */
 const deleteImg = () => {
-  emit("updateImageUrl", "select");
+  emit("updateImageUrl", "");
 };
 
 /**
@@ -104,7 +103,6 @@ const editImg = () => {
  * @description 文件上传前校验并将文件传递给父组件
  */
 const handleImgUpload = (rawFile: UploadFile | any) => {
-  console.log("rawFile", rawFile);
   const isImage = props.fileType.includes(rawFile.raw.type as File.ImageMimeType);
   const isLtSize = rawFile.size / 1024 / 1024 < props.fileSize;
 
@@ -117,32 +115,11 @@ const handleImgUpload = (rawFile: UploadFile | any) => {
     return false;
   }
 
-  const previewUrl = URL.createObjectURL(rawFile); // 本地预览
-  emit("updateImageUrl", previewUrl); // 设置预览图
-  emit("select", rawFile); // 通知父组件
+  // 创建本地预览 URL
+  devImgUrl.value = URL.createObjectURL(rawFile.raw);
+  emit("updateImageUrl", devImgUrl.value);
+  emit("select", rawFile.raw); // 通知父组件
   return false; // 阻止默认上传
-};
-
-/**
- * @description 上传成功（此方法保留用于父组件使用 <el-upload> 手动上传场景）
- */
-const uploadSuccess = () => {
-  ElNotification({
-    title: "温馨提示",
-    message: "图片上传成功！",
-    type: "success"
-  });
-};
-
-/**
- * @description 上传失败
- */
-const uploadError = () => {
-  ElNotification({
-    title: "温馨提示",
-    message: "图片上传失败，请您重新上传！",
-    type: "error"
-  });
 };
 </script>
 

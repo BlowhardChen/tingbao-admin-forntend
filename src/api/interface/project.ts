@@ -11,10 +11,19 @@ export namespace Project {
     name: string;
     price: number;
     projectId: number;
+    appointTypeId: number;
     remark: string;
     status: string;
     up: boolean;
     updateBy: string;
+    updateTime: string;
+  }
+
+  export interface ProjectType {
+    typeId: number;
+    name: string;
+    status: string;
+    createTime: string;
     updateTime: string;
   }
 }

@@ -11,19 +11,21 @@
       >
         <!-- 菜单操作 -->
         <template #operation="scope">
-          <el-button type="primary" link :icon="openMemberCard(scope.row)">会员开卡</el-button>
+          <el-button type="primary" :icon="WalletFilled" link @click="openMemberCard(scope.row)"> 会员充值 </el-button>
         </template>
       </ProTable>
     </div>
+    <MemberDialog ref="dialogRef" />
   </div>
 </template>
 
-<script setup lang="tsx" name="memberMange">
+<script setup lang="tsx">
 import ProTable from "@/components/table-pro/index.vue";
 import { ColumnProps, ProTableInstance } from "@/components/table-pro/interface";
 import { ResPage } from "@/api/interface";
-import { addMemberApi, getMemberListApi } from "@/api/modules/member";
-import { useHandleData } from "@/hooks/useHandleData";
+import { WalletFilled } from "@element-plus/icons-vue";
+import { getMemberListApi, memberRechargeApi } from "@/api/modules/member";
+import MemberDialog from "./components/member-dialog.vue";
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref<ProTableInstance>();
@@ -46,10 +48,15 @@ const columns: ColumnProps<any>[] = [
   { prop: "operation", label: "操作", width: 250, fixed: "right" }
 ];
 
+const dialogRef = ref<InstanceType<typeof MemberDialog> | null>(null);
 // 会员开卡
 const openMemberCard = async (item): Promise<void> => {
-  // await useHandleData(addMemberApi, { nickName: item.nickName, mobile: item.mobile }, "给该会员开卡");
-  // proTable.value?.getTableList();
+  const params = {
+    row: { ...item },
+    api: memberRechargeApi,
+    getTableList: proTable.value?.getTableList
+  };
+  dialogRef.value?.acceptParams(params);
 };
 
 // 获取会员列表

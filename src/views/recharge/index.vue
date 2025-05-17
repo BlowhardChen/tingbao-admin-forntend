@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="rechargeMange">
+<script setup lang="tsx">
 import ProTable from "@/components/table-pro/index.vue";
 import { ColumnProps, ProTableInstance } from "@/components/table-pro/interface";
 import { ResPage } from "@/api/interface";
@@ -28,32 +28,17 @@ const columns: ColumnProps<any>[] = [
   { prop: "nickName", label: "会员名称", search: { el: "input" } },
   { prop: "mobile", label: "手机号码", search: { el: "input" } },
   { prop: "amount", label: "充值金额", search: { el: "input" } },
+  { prop: "paymentChannel", label: "充值来源", search: { el: "input" } },
   { prop: "description", label: "备注信息", search: { el: "input" } },
-  {
-    prop: "createTime",
-    label: "创建时间",
-    width: 200,
-    search: {
-      el: "date-picker",
-      span: 1,
-      props: { type: "daterange", valueFormat: "YYYY-MM-DD" }
-    }
-  },
   {
     prop: "updateTime",
     label: "更新时间",
-    width: 200,
-    search: {
-      el: "date-picker",
-      span: 1,
-      props: { type: "daterange", valueFormat: "YYYY-MM-DD" }
-    }
+    width: 200
   }
 ];
 
 // 获取充值列表
 const getRechargeListData = (params?: any) => {
-  console.log("获取充值列表");
   const { ...newParams } = JSON.parse(JSON.stringify(params));
   return getRechargeListApi({
     ...newParams

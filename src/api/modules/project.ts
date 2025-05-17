@@ -21,7 +21,7 @@ export const editProjectApi = (params: FormData) => {
   return http.post("/weixin/project/update", params, { noLoading: false });
 };
 
-// 项目管理-改变项目状态
-export const changeProjectApi = (params: any) => {
-  return http.post("/weixin/project/delete", params, { noLoading: false });
+// 项目管理-获取项目类型
+export const getAppointTypeListApi = (params?: any) => {
+  return http.post<Project.ProjectType[]>("/weixin/projectType/list", params, { noLoading: false });
 };
