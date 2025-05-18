@@ -20,7 +20,7 @@ export namespace Project {
   }
 
   export interface ProjectType {
-    typeId: number;
+    appointTypeId: number;
     name: string;
     status: string;
     createTime: string;

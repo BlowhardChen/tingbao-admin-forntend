@@ -27,9 +27,9 @@ const proTable = ref<ProTableInstance>();
 const columns: ColumnProps<any>[] = [
   { prop: "nickName", label: "会员名称", search: { el: "input" } },
   { prop: "mobile", label: "手机号码", search: { el: "input" } },
-  { prop: "amount", label: "充值金额", search: { el: "input" } },
-  { prop: "paymentChannel", label: "充值来源", search: { el: "input" } },
-  { prop: "description", label: "备注信息", search: { el: "input" } },
+  { prop: "amount", label: "充值金额" },
+  { prop: "paymentChannel", label: "充值来源" },
+  { prop: "tradeNo", label: "交易流水号", search: { el: "input" } },
   {
     prop: "updateTime",
     label: "更新时间",

@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { HOME_URL } from "@/config";
-import { useRoute, useRouter } from "vue-router";
+import { RouteLocationMatched, useRoute, useRouter } from "vue-router";
 import { ArrowRight } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/modules/global";
 import IconSvg from "@/components/icon-svg/index.vue";
@@ -40,8 +40,10 @@ const breadcrumbList = computed(() => {
   return matched;
 });
 
+type BreadcrumbItem = RouteLocationMatched | { path: string; meta: { icon: string; title: string } };
+
 // Click Breadcrumb
-const onBreadcrumbClick = (item: Menu.MenuOptions, index: number) => {
+const onBreadcrumbClick = (item: BreadcrumbItem, index: number) => {
   console.log("onBreadcrumbClick", item);
   if (index !== breadcrumbList.value.length - 1) router.push(item.path);
 };

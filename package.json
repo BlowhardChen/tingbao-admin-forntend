@@ -7,7 +7,7 @@
     "dev": "vite",
     "build:dev": "vue-tsc && vite build --mode development",
     "build:test": "vue-tsc && vite build --mode test",
-    "build:pro": "vue-tsc && vite build --mode production",
+    "build:pro": "vue-tsc --noEmit && vite build --mode production",
     "serve": "vite preview",
     "type:check": "vue-tsc --noEmit --skipLibCheck",
     "lint:eslint": "eslint --fix --ext .js,.ts,.vue ./src",
@@ -80,7 +80,7 @@
     "stylelint-config-recommended-vue": "^1.5.0",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-config-standard-scss": "^10.0.0",
-    "typescript": "^5.1.6",
+    "typescript": "^5.3.3",
     "unplugin-auto-import": "^0.17.2",
     "unplugin-vue-components": "^0.22.4",
     "unplugin-vue-setup-extend-plus": "^1.0.0",
@@ -89,7 +89,7 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-pwa": "^0.16.4",
     "vite-plugin-svg-icons": "^2.0.1",
-    "vue-tsc": "^1.8.8"
+    "vue-tsc": "1.8.24"
   },
   "engines": {
     "node": ">=16.0.0"

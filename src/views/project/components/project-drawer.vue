@@ -26,7 +26,7 @@
       </el-form-item>
       <el-form-item label="项目类型" prop="appointTypeId">
         <el-select v-model="drawerProps.row!.appointTypeId" placeholder="请选择项目类型">
-          <el-option :label="item.name" :value="item.typeId" v-for="(item, index) in appointTypeList" :key="index" />
+          <el-option :label="item.name" :value="item.appointTypeId" v-for="(item, index) in appointTypeList" :key="index" />
         </el-select>
       </el-form-item>
       <el-form-item label="项目名称" prop="name">
@@ -48,8 +48,8 @@
       </el-form-item>
       <el-form-item label="是否起始价">
         <el-select v-model="drawerProps.row!.up" placeholder="是否起始价">
-          <el-option label="是" value="1" />
-          <el-option label="否" value="0" />
+          <el-option label="是" :value="true" />
+          <el-option label="否" :value="false" />
         </el-select>
       </el-form-item>
       <el-form-item label="是否启用" prop="status">
@@ -141,7 +141,7 @@ const handleSubmit = (): void => {
       formData.append("durationMinutes", row.durationMinutes);
       formData.append("price", row.price);
       formData.append("up", row.up ? "1" : "0");
-      formData.append("status", row.status ? "1" : "0");
+      formData.append("status", row.status ? "0" : "1");
       formData.append("remark", row.remark);
 
       await drawerProps.value.api!(formData);

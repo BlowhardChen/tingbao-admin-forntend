@@ -6,7 +6,7 @@ import { Login } from "@/api/interface/login";
 export const useUserStore = defineStore("user", {
   state: (): UserState => ({
     token: "",
-    userInfo: {}
+    userInfo: {} as Login.UserAccountInfo
   }),
   getters: {},
   actions: {

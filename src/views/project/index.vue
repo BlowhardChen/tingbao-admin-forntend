@@ -85,18 +85,15 @@ const columns: ColumnProps<any>[] = [
     search: { el: "tree-select" },
     fieldNames: { label: "label", value: "value" },
     render: scope => {
+      const isEnabled = scope.row.status === "0"; // 启用是 0，禁用是 1
       return (
-        <>
-          {
-            <el-switch
-              model-value={Boolean(Number(scope.row.status))}
-              inline-prompt
-              active-text={scope.row.status === "1" ? "启用" : "禁用"}
-              inactive-text={scope.row.status === "1" ? "启用" : "禁用"}
-              onClick={() => changeProjectStatus(scope.row)}
-            />
-          }
-        </>
+        <el-switch
+          model-value={isEnabled}
+          inline-prompt
+          active-text="启用"
+          inactive-text="禁用"
+          onClick={() => changeProjectStatus(scope.row)}
+        />
       );
     }
   },
@@ -125,7 +122,7 @@ const openDrawer = (title: string, row?: any | {}) => {
 const changePriceStatus = async (row: Project.ProjectList): Promise<void> => {
   await useHandleData(
     editProjectApi,
-    { projectId: row.projectId, status: row.up === true ? false : true, appointTypeId: row.appointTypeId },
+    { ...row, status: row.status === "1" ? "0" : "1" },
     `将【${row.name}】${row.status === "0" ? "改为起始价" : "改为固定价"}`
   );
   proTable.value?.getTableList();
@@ -135,7 +132,7 @@ const changePriceStatus = async (row: Project.ProjectList): Promise<void> => {
 const changeProjectStatus = async (row: Project.ProjectList): Promise<void> => {
   await useHandleData(
     editProjectApi,
-    { projectId: row.projectId, status: row.status === "1" ? "0" : "1", appointTypeId: row.appointTypeId },
+    { ...row, status: row.up === true ? false : true },
     `${row.status === "0" ? "启用" : "禁用"}【${row.name}】`
   );
   proTable.value?.getTableList();
