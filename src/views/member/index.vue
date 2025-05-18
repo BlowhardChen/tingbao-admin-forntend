@@ -11,7 +11,8 @@
       >
         <!-- 菜单操作 -->
         <template #operation="scope">
-          <el-button type="primary" :icon="WalletFilled" link @click="openMemberCard(scope.row)"> 会员充值 </el-button>
+          <el-button type="primary" :icon="UserFilled" link @click="openMemberCard(scope.row)"> 会员充值 </el-button>
+          <el-button type="primary" :icon="WalletFilled" link @click="openMemberDeduction(scope.row)"> 会员扣款 </el-button>
         </template>
       </ProTable>
     </div>
@@ -23,8 +24,8 @@
 import ProTable from "@/components/table-pro/index.vue";
 import { ColumnProps, ProTableInstance } from "@/components/table-pro/interface";
 import { ResPage } from "@/api/interface";
-import { WalletFilled } from "@element-plus/icons-vue";
-import { getMemberListApi, memberRechargeApi } from "@/api/modules/member";
+import { WalletFilled, UserFilled } from "@element-plus/icons-vue";
+import { getMemberListApi, memberDeductionApi, memberRechargeApi } from "@/api/modules/member";
 import MemberDialog from "./components/member-dialog.vue";
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
@@ -52,6 +53,7 @@ const dialogRef = ref<InstanceType<typeof MemberDialog> | null>(null);
 // 会员开卡
 const openMemberCard = async (item): Promise<void> => {
   const params = {
+    title: "会员充值",
     row: { ...item },
     api: memberRechargeApi,
     getTableList: proTable.value?.getTableList
@@ -59,9 +61,18 @@ const openMemberCard = async (item): Promise<void> => {
   dialogRef.value?.acceptParams(params);
 };
 
+// 会员扣款
+const openMemberDeduction = async (item): Promise<void> => {
+  const params = {
+    title: "会员扣款",
+    row: { ...item },
+    api: memberDeductionApi,
+    getTableList: proTable.value?.getTableList
+  };
+  dialogRef.value?.acceptParams(params);
+};
 // 获取会员列表
 const getMemberListData = (params?: any) => {
-  console.log("获取会员列表");
   const { ...newParams } = JSON.parse(JSON.stringify(params));
   return getMemberListApi({
     ...newParams

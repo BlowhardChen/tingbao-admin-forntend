@@ -67,10 +67,10 @@ const columns: ColumnProps<any>[] = [
         <>
           {
             <el-switch
-              model-value={Boolean(Number(scope.row.status))}
+              model-value={scope.row.up}
               inline-prompt
-              active-text={scope.row.up === true ? "是" : "否"}
-              inactive-text={scope.row.up === true ? "是" : "否"}
+              active-text="是"
+              inactive-text="否"
               onClick={() => changePriceStatus(scope.row)}
             />
           }
@@ -120,22 +120,31 @@ const openDrawer = (title: string, row?: any | {}) => {
 
 // 改变起始价状态
 const changePriceStatus = async (row: Project.ProjectList): Promise<void> => {
-  await useHandleData(
-    editProjectApi,
-    { ...row, status: row.status === "1" ? "0" : "1" },
-    `将【${row.name}】${row.status === "0" ? "改为起始价" : "改为固定价"}`
-  );
+  const formData = toFormData({
+    ...row,
+    up: row.up ? false : true
+  });
+  await useHandleData(editProjectApi, formData, `将【${row.name}】${row.status === "0" ? "改为起始价" : "改为固定价"}`);
   proTable.value?.getTableList();
 };
 
 // 改变项目状态
 const changeProjectStatus = async (row: Project.ProjectList): Promise<void> => {
-  await useHandleData(
-    editProjectApi,
-    { ...row, status: row.up === true ? false : true },
-    `${row.status === "0" ? "启用" : "禁用"}【${row.name}】`
-  );
+  const formData = toFormData({
+    ...row,
+    status: row.status === "1" ? "0" : "1"
+  });
+  await useHandleData(editProjectApi, formData, `${row.status === "0" ? "启用" : "禁用"}【${row.name}】`);
   proTable.value?.getTableList();
+};
+
+// 将对象转换为 FormData
+const toFormData = (data: Record<string, any>): FormData => {
+  const formData = new FormData();
+  for (const key in data) {
+    formData.append(key, data[key]);
+  }
+  return formData;
 };
 
 // 获取项目列表

@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="dialogVisible"
-    title="会员充值"
+    :title="dialogrProps?.title"
     width="25%"
     :close-on-click-modal="false"
     :close-on-press-escape="true"
@@ -14,15 +14,18 @@
   >
     <div class="dialog-content">
       <el-form ref="formRef" :model="form" label-width="100px" :rules="rules" style="margin-top: 25px">
-        <el-form-item label="充值金额" prop="amount">
+        <el-form-item :label="`${dialogrProps?.title === '会员充值' ? '充值' : '扣款'}金额`" prop="amount">
           <el-input v-model="form.amount" type="number" />
+        </el-form-item>
+        <el-form-item label="扣款描述" prop="description">
+          <el-input v-model="form.description" type="textarea" />
         </el-form-item>
       </el-form>
     </div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" v-debounce="onConfirm">充值</el-button>
+        <el-button type="primary" v-debounce="onConfirm">{{ dialogrProps?.title === "会员充值" ? "充值" : "扣款" }}</el-button>
       </span>
     </template>
   </el-dialog>
@@ -34,17 +37,19 @@ import { ElMessage, FormInstance, FormRules } from "element-plus";
 
 const dialogVisible = ref(false);
 const form = reactive({
-  amount: ""
+  amount: "",
+  description: ""
 });
 
 const rules = reactive<FormRules>({
   amount: [
-    { required: true, message: "请输入充值金额", trigger: "blur" },
-    { min: 1, message: "充值金额不能小于1元", trigger: "blur" }
+    { required: true, message: "请输入金额", trigger: "blur" },
+    { min: 1, message: "金额不能小于1元", trigger: "blur" }
   ]
 });
 
 interface DialogProps {
+  title: string;
   row: Member.MemberList | {};
   api?: (params: any) => Promise<any>;
   getTableList?: () => void;
@@ -62,10 +67,13 @@ const onConfirm = (): void => {
   formRef.value!.validate(async valid => {
     if (!valid) return;
     try {
-      const data = await dialogrProps.value.api({
-        userId: dialogrProps.value.row.userId,
-        amount: form.amount
-      });
+      let params = {};
+      if (dialogrProps.value.title === "会员扣款") {
+        params = { userId: dialogrProps.value.row.userId, amount: form.amount, description: form.description };
+      } else {
+        params = { userId: dialogrProps.value.row.userId, amount: form.amount };
+      }
+      const data = await dialogrProps.value.api(params);
       ElMessage({
         message: data.msg,
         type: "success"

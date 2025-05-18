@@ -7,7 +7,7 @@
       </div>
       <div class="login-form">
         <div class="login-logo">
-          <h2 class="logo-text">婷宝美业后台管理系统</h2>
+          <h2 class="logo-text">婷宝美业管理平台</h2>
         </div>
         <LoginForm />
       </div>
