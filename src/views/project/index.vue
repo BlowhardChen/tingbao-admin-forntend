@@ -42,7 +42,21 @@ const columns: ColumnProps<any>[] = [
   { prop: "name", label: "项目名称", search: { el: "input" } },
   { prop: "projectName", label: "项目类型", search: { el: "input" } },
   { prop: "activity", label: "项目描述", search: { el: "input" } },
-  { prop: "price", label: "项目价格（￥）", search: { el: "input" } },
+  {
+    prop: "price",
+    label: "项目价格（￥）",
+    search: { el: "input" },
+    render: scope => {
+      return (
+        <>
+          <div>
+            {scope.row?.price}
+            <span style={"font-size:12px"}> {`${scope.row?.up ? "起" : ""}`}</span>
+          </div>
+        </>
+      );
+    }
+  },
   {
     prop: "imageUrl",
     label: "项目图片",
@@ -124,7 +138,7 @@ const changePriceStatus = async (row: Project.ProjectList): Promise<void> => {
     ...row,
     up: row.up ? false : true
   });
-  await useHandleData(editProjectApi, formData, `将【${row.name}】${row.status === "0" ? "改为起始价" : "改为固定价"}`);
+  await useHandleData(editProjectApi, formData, `将【${row.name}】${row.up ? "改为固定价" : "改为起始价"}`);
   proTable.value?.getTableList();
 };
 
@@ -134,7 +148,7 @@ const changeProjectStatus = async (row: Project.ProjectList): Promise<void> => {
     ...row,
     status: row.status === "1" ? "0" : "1"
   });
-  await useHandleData(editProjectApi, formData, `${row.status === "0" ? "启用" : "禁用"}【${row.name}】`);
+  await useHandleData(editProjectApi, formData, `${row.status === "0" ? "禁用" : "启用"}【${row.name}】`);
   proTable.value?.getTableList();
 };
 

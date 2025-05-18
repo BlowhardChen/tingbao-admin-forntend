@@ -17,7 +17,7 @@
         <el-form-item :label="`${dialogrProps?.title === '会员充值' ? '充值' : '扣款'}金额`" prop="amount">
           <el-input v-model="form.amount" type="number" />
         </el-form-item>
-        <el-form-item label="扣款描述" prop="description">
+        <el-form-item label="扣款描述" prop="description" v-if="dialogrProps?.title === '会员扣款'">
           <el-input v-model="form.description" type="textarea" />
         </el-form-item>
       </el-form>
