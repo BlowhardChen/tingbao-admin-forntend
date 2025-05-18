@@ -7,7 +7,7 @@
             <p class="card-header-title">订单动态</p>
             <p class="card-header-desc">最近一周预约订单状态</p>
           </div>
-          <v-chart class="chart" :option="orderOptions" />
+          <v-chart class="chart" :option="orderOptions" autoresize />
         </el-card>
       </el-col>
       <el-col :span="8">
@@ -16,7 +16,7 @@
             <p class="card-header-title">预约项目分类</p>
             <p class="card-header-desc">最近一个月预约项目的分类情况</p>
           </div>
-          <v-chart class="chart" :option="projectOptions" />
+          <v-chart class="chart" :option="projectOptions" autoresize />
         </el-card>
       </el-col>
     </el-row>
@@ -133,7 +133,7 @@ onMounted(async () => {
 <style scoped>
 .chart {
   width: 100%;
-  height: 665px;
+  height: 72vh;
 }
 .card-header {
   padding-left: 10px;
